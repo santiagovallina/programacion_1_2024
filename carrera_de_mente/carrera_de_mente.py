@@ -2,7 +2,7 @@ from constantes import *
 import pygame as pg
 from datos import lista
 
-lista_datos = []
+
 pregunta = ""
 tema = ""
 respuesta_a = ""
