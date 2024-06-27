@@ -19,7 +19,7 @@ lista_respuesta_correcta = []
 contador = 0
 puntuacion = 0
 repetir = 1
-intentos = 0
+intentos_incorrectos = 0
 
 for e_lista in lista:
     lista_preguntas.append(e_lista["pregunta"])
@@ -109,7 +109,22 @@ while flag_run:
             
             if respuesta_elegida == respuesta_correcta:
                 puntuacion += 10
+                respuesta_a = ""
+                respuesta_b = ""
+                respuesta_c = ""
+                texto_respuesta_a = fuente_dos.render(str(respuesta_a), True, COLOR_AMARILLO)
+                texto_respuesta_b = fuente_dos.render(str(respuesta_b), True, COLOR_AMARILLO)
+                texto_respuesta_c = fuente_dos.render(str(respuesta_c), True, COLOR_AMARILLO)
             
+            elif respuesta_elegida != respuesta_correcta and respuesta_elegida is not None:
+                intentos_incorrectos += 1 
+                if intentos_incorrectos == 2:
+                    respuesta_a = ""
+                    respuesta_b = ""
+                    respuesta_c = ""
+                    texto_respuesta_a = fuente_dos.render(str(respuesta_a), True, COLOR_AMARILLO)
+                    texto_respuesta_b = fuente_dos.render(str(respuesta_b), True, COLOR_AMARILLO)
+                    texto_respuesta_c = fuente_dos.render(str(respuesta_c), True, COLOR_AMARILLO)
             
             print(respuesta_correcta)
             print(contador)
