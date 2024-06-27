@@ -3,10 +3,7 @@ from constantes_utn import *
 from datos_utn import lista
 
 pregunta = ""
-texto_pregunta_lineas = []
-texto_respuesta_a = []
-texto_respuesta_b = []
-texto_respuesta_c = []
+texto_pregunta_lines = ""
 respuesta_a = ""
 respuesta_b = ""
 respuesta_c = ""
@@ -29,7 +26,6 @@ for e_lista in lista:
     lista_respuesta_c.append(e_lista["c"])
     lista_respuesta_correcta.append(e_lista["correcta"])
 
-
 pg.init()
 
 fuente = pg.font.SysFont("Arial", 30)
@@ -41,9 +37,9 @@ boton_terminar = fuente.render(str("Terminar"), True, NEGRO)
 
 
 texto_pregunta = fuente_dos.render(str(pregunta), True, NEGRO)
-texto_respuesta_a_ = fuente_dos.render(str(respuesta_a), True, COLOR_AMARILLO)
-texto_respuesta_b_ = fuente_dos.render(str(respuesta_b), True, COLOR_AMARILLO)
-texto_respuesta_c_ = fuente_dos.render(str(respuesta_c), True, COLOR_AMARILLO)
+texto_respuesta_a = fuente_dos.render(str(respuesta_a), True, COLOR_AMARILLO)
+texto_respuesta_b = fuente_dos.render(str(respuesta_b), True, COLOR_AMARILLO)
+texto_respuesta_c = fuente_dos.render(str(respuesta_c), True, COLOR_AMARILLO)
 texto_score = fuente_dos.render(str("SCORE"), True, COLOR_GRIS)
 texto_puntuacion = fuente_dos.render(str("0"), True, COLOR_GRIS)
 texto_tiempo = fuente.render(str("Tiempo: "), True, NEGRO)
@@ -76,22 +72,20 @@ fin_tiempo = False
 screen = pg.display.set_mode((ANCHO_VENTANA, ALTO_VENTANA))
 pg.display.set_caption("Carrera UTN")
 
-
-def render_text(texto, fuente, color, max_ancho):
-    palabras = texto.split(' ')
-    lineas = []
-    linea_actual = palabras[0]
+def render_text(text, font, color, max_width):
+    words = text.split(' ')
+    lines = []
+    current_line = words[0]
     
-    for palabra in palabras[1:]:
-        if fuente.size(linea_actual + ' ' + palabra)[0] <= max_ancho:
-            linea_actual += ' ' + palabra
+    for word in words[1:]:
+        if font.size(current_line + ' ' + word)[0] <= max_width:
+            current_line += ' ' + word
         else:
-            lineas.append(linea_actual)
-            linea_actual = palabra
+            lines.append(current_line)
+            current_line = word
             
-    lineas.append(linea_actual)
-    return [fuente.render(linea, True, color) for linea in lineas]
-
+    lines.append(current_line)
+    return [font.render(line, True, color) for line in lines]
 
 flag_run = True
 while flag_run:
@@ -103,40 +97,27 @@ while flag_run:
             posicion_click = list(evento.pos)
             print(posicion_click)
             
-            if posicion_click[0] > 150 and posicion_click[0] < 310 and posicion_click[1] > 520 and posicion_click[1] < 600:
+            if 150 < posicion_click[0] < 310 and 520 < posicion_click[1] < 600:
                 pregunta = lista_preguntas[contador]
                 respuesta_a = lista_respuesta_a[contador]
                 respuesta_b = lista_respuesta_b[contador]
                 respuesta_c = lista_respuesta_c[contador]
                 respuesta_correcta = lista_respuesta_correcta[contador]
-                texto_pregunta_lineas = render_text(pregunta, fuente_dos, NEGRO, 350)
-                texto_respuesta_a = render_text(respuesta_a, fuente_dos, COLOR_AMARILLO, 100)
-                texto_respuesta_b = render_text(respuesta_b, fuente_dos, COLOR_AMARILLO, 100)
-                texto_respuesta_c = render_text(respuesta_c, fuente_dos, COLOR_AMARILLO, 100)
+
+                texto_pregunta_lines = render_text(pregunta, fuente_dos, NEGRO, 350)
+                
+                texto_respuesta_a = fuente_dos.render(str(respuesta_a), True, COLOR_AMARILLO)
+                texto_respuesta_b = fuente_dos.render(str(respuesta_b), True, COLOR_AMARILLO)
+                texto_respuesta_c = fuente_dos.render(str(respuesta_c), True, COLOR_AMARILLO)
                 tiempo_iniciado = True
                 segundos = 5
-            
-            if posicion_click[0] > 450 and posicion_click[0] < 650 and posicion_click[1] > 520 and posicion_click[1] < 600:
-                pregunta = ""
-                respuesta_a = ""
-                respuesta_b = ""
-                respuesta_c = ""
-                texto_pregunta_lineas = []
-                texto_respuesta_a = []
-                texto_respuesta_b = []
-                texto_respuesta_c = []
-                puntuacion = 0
-                contador = 0
-                segundos = 5
-                rect_personaje = pg.Rect(120, 240, 150, 40)
-                tiempo_iniciado = False 
-            
-            if tiempo_iniciado:  
-                if posicion_click[0] > 245 and posicion_click[0] < 320 and posicion_click[1] > 150 and posicion_click[1] < 190:
+
+            if tiempo_iniciado:
+                if 245 < posicion_click[0] < 320 and 170 < posicion_click[1] < 190:
                     respuesta_elegida = "a"
-                elif posicion_click[0] > 375 and posicion_click[0] < 455 and posicion_click[1] > 150 and posicion_click[1] < 190:
+                elif 375 < posicion_click[0] < 455 and 170 < posicion_click[1] < 190:
                     respuesta_elegida = "b"
-                elif posicion_click[0] > 500 and posicion_click[0] < 570 and posicion_click[1] > 150 and posicion_click[1] < 190:
+                elif 500 < posicion_click[0] < 570 and 170 < posicion_click[1] < 190:
                     respuesta_elegida = "c"
                 else:
                     respuesta_elegida = None
@@ -172,19 +153,21 @@ while flag_run:
                 texto_puntuacion = fuente.render(str(puntuacion), True, NEGRO)
                 
                 if contador < len(lista_preguntas):
+                    contador += 1
                     pregunta = lista_preguntas[contador]
                     respuesta_a = lista_respuesta_a[contador]
                     respuesta_b = lista_respuesta_b[contador]
                     respuesta_c = lista_respuesta_c[contador]
                     respuesta_correcta = lista_respuesta_correcta[contador]
-                    texto_pregunta_lineas = render_text(pregunta, fuente_dos, NEGRO, 350)
-                    texto_respuesta_a = render_text(respuesta_a, fuente_dos, COLOR_AMARILLO, 100)
-                    texto_respuesta_b = render_text(respuesta_b, fuente_dos, COLOR_AMARILLO, 100)
-                    texto_respuesta_c = render_text(respuesta_c, fuente_dos, COLOR_AMARILLO, 100)
-                    segundos = 5  # Reiniciar el temporizador para la siguiente pregunta
+                    
+                    texto_pregunta_lines = render_text(pregunta, fuente_dos, NEGRO, 350)
+                    
+                    texto_respuesta_a = fuente_dos.render(respuesta_a, True, COLOR_AMARILLO)
+                    texto_respuesta_b = fuente_dos.render(respuesta_b, True, COLOR_AMARILLO)
+                    texto_respuesta_c = fuente_dos.render(respuesta_c, True, COLOR_AMARILLO)
+                    segundos = 5
                 else:
                     fin_tiempo = True
-                contador += 1
         
         if evento.type == timer_segundos and tiempo_iniciado:
             if not fin_tiempo:
@@ -197,20 +180,16 @@ while flag_run:
                         respuesta_b = lista_respuesta_b[contador]
                         respuesta_c = lista_respuesta_c[contador]
                         respuesta_correcta = lista_respuesta_correcta[contador]
-                        texto_pregunta_lineas = render_text(pregunta, fuente_dos, NEGRO, 350)
-                        texto_respuesta_a = render_text(respuesta_a, fuente_dos, COLOR_AMARILLO, 100)
-                        texto_respuesta_b = render_text(respuesta_b, fuente_dos, COLOR_AMARILLO, 100)
-                        texto_respuesta_c = render_text(respuesta_c, fuente_dos, COLOR_AMARILLO, 100)
-                        segundos = 5  # Reiniciar temporizador
+                        
+                        texto_pregunta_lines = render_text(pregunta, fuente_dos, NEGRO, 350)
+                        
+                        texto_respuesta_a = fuente_dos.render(respuesta_a, True, COLOR_AMARILLO)
+                        texto_respuesta_b = fuente_dos.render(respuesta_b, True, COLOR_AMARILLO)
+                        texto_respuesta_c = fuente_dos.render(respuesta_c, True, COLOR_AMARILLO)
+                        segundos = 5
                     else:
                         fin_tiempo = True
 
-    if rect_personaje.x > 505 and rect_personaje.x < 560 and rect_personaje.y < 340:
-        rect_personaje.move_ip(65, 0)
-    elif rect_personaje.x > 375 and rect_personaje.x < 435 and rect_personaje.y > 340:
-        rect_personaje.move_ip(65, 0)
-    
-    
     screen.fill(STEELBLUE)
 
     pg.draw.rect(screen, STEELBLUE3, (450, 520, 200, 80), border_radius=15)
@@ -219,58 +198,18 @@ while flag_run:
     pg.draw.rect(screen, BLACK, (239, 9, 352, 202))
     pg.draw.rect(screen, GREEN, (240, 10, 350, 200))
     
-    pg.draw.rect(screen, CORAL1, (180, 280, 60, 60), border_radius=15)
-    pg.draw.rect(screen, GRAY63, (245, 280, 60, 60), border_radius=15)
-    pg.draw.rect(screen, YELLOW3, (310, 280, 60, 60), border_radius=15)
-    pg.draw.rect(screen, SKYBLUE3, (375, 280, 60, 60), border_radius=15)
-    pg.draw.rect(screen, RED2, (440, 280, 60, 60),  border_radius=15)
-    pg.draw.rect(screen, VIOLETRED1, (505, 280, 60, 60), border_radius=15)
-    pg.draw.rect(screen, PINK, (570, 280, 60, 60), border_radius=15)
-    pg.draw.rect(screen, GREEN, (635, 280, 60, 60), border_radius=15)
+    # Dibuja casillas aquí
+
+    for i, line in enumerate(texto_pregunta_lines):
+        screen.blit(line, (245, 30 + i * 30))
     
-    pg.draw.rect(screen, CORAL1, (180, 400, 60, 60), border_radius=15)
-    pg.draw.rect(screen, GRAY63, (245, 400, 60, 60), border_radius=15)
-    pg.draw.rect(screen, YELLOW3, (310, 400, 60, 60), border_radius=15)
-    pg.draw.rect(screen, SKYBLUE3, (375, 400, 60, 60), border_radius=15)
-    pg.draw.rect(screen, RED2, (440, 400, 60, 60), border_radius=15)
-    pg.draw.rect(screen, VIOLETRED1, (505, 400, 60, 60), border_radius=15)
-    pg.draw.rect(screen, PINK, (570, 400, 60, 60), border_radius=15)
-    pg.draw.rect(screen, GREEN, (635, 400, 60, 60), border_radius=15)
+    screen.blit(texto_respuesta_a, (245, 170))
+    screen.blit(texto_respuesta_b, (380, 170))
+    screen.blit(texto_respuesta_c, (500, 170))
     
-    screen.blit(imagen_logo, (10, 10))
-    screen.blit(imagen_llegada, (40, 410))
-    screen.blit(imagen_personaje, (rect_personaje.x, rect_personaje.y))
-    
-    screen.blit(boton_comenzar, (185, 540,22,22))
-    screen.blit(boton_terminar, (485, 540,22,22))
-    
-    screen.blit(texto_tiempo, (610, 35))
-    #screen.blit(texto_tiempo_numero, (740, 35))
-    screen.blit(texto_score, (610, 100))
     screen.blit(texto_puntuacion, (740, 100))
-    #screen.blit(texto_pregunta, (245, 30))
-    #screen.blit(texto_respuesta_a, (245, 170))
-    #screen.blit(texto_respuesta_b, (380, 170))
-    #screen.blit(texto_respuesta_c, (500, 170))
-    
-    for i, linea in enumerate(texto_pregunta_lineas):
-        screen.blit(linea, (245, 30 + i * 30))
-    for i, linea in enumerate(texto_respuesta_a):
-        screen.blit(linea, (245, 150 + i * 30))
-    for i, linea in enumerate(texto_respuesta_b):
-        screen.blit(linea, (375, 150 + i * 30))
-    for i, linea in enumerate(texto_respuesta_c):
-        screen.blit(linea, (500, 150 + i * 30))
-    
-    screen.blit(texto_llegada, (70, 450))
-    screen.blit(texto_salida, (100, 320))
-    screen.blit(texto_avanza_uno, (509, 303))
-    screen.blit(texto_retrocede_uno, (376, 425))
-    
-    segundos_texto = fuente.render(str(segundos), True, NEGRO)
-    screen.blit(segundos_texto, (740, 35))
     
     pg.display.flip()
 
-
 pg.quit()
+

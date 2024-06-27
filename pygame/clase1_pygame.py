@@ -69,7 +69,7 @@ while running:
             rect_messi[1] = lista_posicion[1]
         
         """if event.type == pg.MOUSEBUTTONDOWN:
-            poscion_imagen_messi = list(event.pos)
+            poscion_imagen_messi = list(event.pos)"""
         
         if event.type == pg.USEREVENT:
             if event.type == timer_segundos:
@@ -79,7 +79,7 @@ while running:
                         fin_tiempo = True
                         segundos = "Tiempo"
         
-        if event.type == pg.USEREVENT+1:
+        """if event.type == pg.USEREVENT+1:
             if event.type == timer_2_segundos:
                 print("pasaron 2 segundos")
         
