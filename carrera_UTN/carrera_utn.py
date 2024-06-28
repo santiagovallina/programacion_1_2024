@@ -1,6 +1,7 @@
 import pygame as pg
 from constantes_utn import *
 from datos_utn import lista
+import json
 
 pregunta = ""
 texto_pregunta_lineas = []
@@ -21,6 +22,7 @@ tiempo = 0
 contador = 0
 puntuacion = 0
 tiempo_iniciado = False
+nombre = ""
 
 for e_lista in lista:
     lista_preguntas.append(e_lista["pregunta"])
@@ -93,6 +95,62 @@ def render_text(texto, fuente, color, max_ancho):
     return [fuente.render(linea, True, color) for linea in lineas]
 
 
+#
+def pedir_nombre():
+    nombre = ""
+    while True:
+        for evento in pg.event.get():
+            if evento.type == pg.QUIT:
+                pg.quit()
+                return None
+            elif evento.type == pg.KEYDOWN:
+                if evento.key == pg.K_RETURN:
+                    return nombre
+                elif evento.key == pg.K_BACKSPACE:
+                    nombre = nombre[:-1]
+                else:
+                    nombre += evento.unicode
+        screen.fill(STEELBLUE)
+        texto = fuente.render("Ingrese su nombre: " + nombre, True, NEGRO)
+        screen.blit(texto, (100, 200))
+        pg.display.flip()
+
+
+
+def guardar_puntaje(nombre, puntaje):
+    archivo_puntajes = "puntajes.json"
+    try:
+        with open(archivo_puntajes, "r") as archivo:
+            puntajes = json.load(archivo)
+    except FileNotFoundError:
+        puntajes = []
+
+    puntajes.append({"nombre": nombre, "puntaje": puntaje})
+    puntajes = sorted(puntajes, key=lambda x: x["puntaje"], reverse=True)[:10]
+
+    with open(archivo_puntajes, "w") as archivo:
+        json.dump(puntajes, archivo)
+
+
+def mostrar_mejores_puntajes():
+    archivo_puntajes = "puntajes.json"
+    try:
+        with open(archivo_puntajes, "r") as archivo:
+            puntajes = json.load(archivo)
+    except FileNotFoundError:
+        puntajes = []
+    screen.fill(STEELBLUE)
+    y = 50
+    for i, puntaje in enumerate(puntajes):
+        texto = fuente.render(f"{i + 1} {puntaje['nombre'].capitalize()} - {puntaje['puntaje']}", True, NEGRO)
+        screen.blit(texto, (100, y))
+        y += 30
+    pg.display.flip()
+    pg.time.wait(5000)
+#
+
+
+mostrando_puntajes = False 
 flag_run = True
 while flag_run:
     lista_eventos = pg.event.get()
@@ -102,7 +160,7 @@ while flag_run:
         if evento.type == pg.MOUSEBUTTONDOWN:
             posicion_click = list(evento.pos)
             print(posicion_click)
-            
+
             if posicion_click[0] > 150 and posicion_click[0] < 310 and posicion_click[1] > 520 and posicion_click[1] < 600:
                 pregunta = lista_preguntas[contador]
                 respuesta_a = lista_respuesta_a[contador]
@@ -117,6 +175,10 @@ while flag_run:
                 segundos = 5
             
             if posicion_click[0] > 450 and posicion_click[0] < 650 and posicion_click[1] > 520 and posicion_click[1] < 600:
+                nombre = pedir_nombre()
+                if nombre:
+                    guardar_puntaje(nombre, puntuacion)
+                    mostrar_mejores_puntajes()
                 pregunta = ""
                 respuesta_a = ""
                 respuesta_b = ""
@@ -129,7 +191,7 @@ while flag_run:
                 contador = 0
                 segundos = 5
                 rect_personaje = pg.Rect(120, 240, 150, 40)
-                tiempo_iniciado = False 
+                tiempo_iniciado = False
             
             if tiempo_iniciado:  
                 if posicion_click[0] > 245 and posicion_click[0] < 320 and posicion_click[1] > 150 and posicion_click[1] < 190:
@@ -204,7 +266,14 @@ while flag_run:
                         segundos = 5  # Reiniciar temporizador
                     else:
                         fin_tiempo = True
-
+        
+    
+    if rect_personaje.colliderect(rect_llegada):
+        nombre = pedir_nombre()
+        if nombre:
+            guardar_puntaje(nombre, puntuacion)
+            mostrar_mejores_puntajes()
+        
     if rect_personaje.x > 505 and rect_personaje.x < 560 and rect_personaje.y < 340:
         rect_personaje.move_ip(65, 0)
     elif rect_personaje.x > 375 and rect_personaje.x < 435 and rect_personaje.y > 340:
@@ -212,7 +281,7 @@ while flag_run:
     
     
     screen.fill(STEELBLUE)
-
+    
     pg.draw.rect(screen, STEELBLUE3, (450, 520, 200, 80), border_radius=15)
     pg.draw.rect(screen, STEELBLUE3, (150, 520, 200, 80), border_radius=15)
     
@@ -245,13 +314,8 @@ while flag_run:
     screen.blit(boton_terminar, (485, 540,22,22))
     
     screen.blit(texto_tiempo, (610, 35))
-    #screen.blit(texto_tiempo_numero, (740, 35))
     screen.blit(texto_score, (610, 100))
     screen.blit(texto_puntuacion, (740, 100))
-    #screen.blit(texto_pregunta, (245, 30))
-    #screen.blit(texto_respuesta_a, (245, 170))
-    #screen.blit(texto_respuesta_b, (380, 170))
-    #screen.blit(texto_respuesta_c, (500, 170))
     
     for i, linea in enumerate(texto_pregunta_lineas):
         screen.blit(linea, (245, 30 + i * 30))
@@ -271,6 +335,4 @@ while flag_run:
     screen.blit(segundos_texto, (740, 35))
     
     pg.display.flip()
-
-
 pg.quit()
