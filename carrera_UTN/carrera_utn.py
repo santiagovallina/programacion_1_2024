@@ -3,6 +3,7 @@ from constantes_utn import *
 from datos_utn import lista
 import json
 
+
 pregunta = ""
 texto_pregunta_lineas = []
 texto_respuesta_a = []
@@ -83,19 +84,17 @@ def render_text(texto, fuente, color, max_ancho):
     palabras = texto.split(' ')
     lineas = []
     linea_actual = palabras[0]
-    
     for palabra in palabras[1:]:
         if fuente.size(linea_actual + ' ' + palabra)[0] <= max_ancho:
             linea_actual += ' ' + palabra
         else:
             lineas.append(linea_actual)
             linea_actual = palabra
-            
     lineas.append(linea_actual)
     return [fuente.render(linea, True, color) for linea in lineas]
 
 
-#
+
 def pedir_nombre():
     nombre = ""
     while True:
@@ -124,10 +123,8 @@ def guardar_puntaje(nombre, puntaje):
             puntajes = json.load(archivo)
     except FileNotFoundError:
         puntajes = []
-
     puntajes.append({"nombre": nombre, "puntaje": puntaje})
     puntajes = sorted(puntajes, key=lambda x: x["puntaje"], reverse=True)[:10]
-
     with open(archivo_puntajes, "w") as archivo:
         json.dump(puntajes, archivo)
 
@@ -140,17 +137,17 @@ def mostrar_mejores_puntajes():
     except FileNotFoundError:
         puntajes = []
     screen.fill(STEELBLUE)
-    y = 50
-    for i, puntaje in enumerate(puntajes):
-        texto = fuente.render(f"{i + 1} {puntaje['nombre'].capitalize()} - {puntaje['puntaje']}", True, NEGRO)
-        screen.blit(texto, (100, y))
-        y += 30
+    posicion_y = 50
+    for indice, puntaje in enumerate(puntajes):
+        texto = fuente.render(f"{indice + 1} {puntaje['nombre'].capitalize()} - {puntaje['puntaje']}", True, NEGRO)
+        screen.blit(texto, (100, posicion_y))
+        posicion_y += 50
     pg.display.flip()
-    pg.time.wait(5000)
-#
+    pg.time.wait(4000)
 
 
-mostrando_puntajes = False 
+
+
 flag_run = True
 while flag_run:
     lista_eventos = pg.event.get()
