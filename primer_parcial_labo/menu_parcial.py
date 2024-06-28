@@ -30,25 +30,27 @@ def mostrar_menu():
         6) Guardar servicios: Se deberá guardar el listado del punto anterior en un archivo de tipo json.
         7) Salir.
         """
-    lista_json = cargar_archivo("primer_parcial_labo\data_parcial.json")
+    #lista_json = cargar_archivo(nombre_archivo)
     while True:
         print(menu)
         opcion_elegida = input("Elija una opcion: ")
         match opcion_elegida:
             case "1":
-                print(cargar_archivo("primer_parcial_labo\data_parcial.json"))
+                nombre_archivo = input("Ingrese el nombre del archivo: ")
+                cargar_archivo(nombre_archivo)
             case "2":
-                imprimir_lista(cargar_archivo("primer_parcial_labo\data_parcial.json"))
+                imprimir_lista()
             case "3":
-                datos = asignar_totales(lista_json)
-                for dato in datos:  
-                    print(dato)
+                asignar_totales()
             case "4":
-                print()
+                numero_de_tipo = input("Ingrese que tipo desea filtrar: ")
+                filtrar_por_tipo(str(numero_de_tipo))
             case "5":
-                print(ordenar(lista_json, "descripcion"))
+                lista = ordenar("descripcion")
+                for dato in lista:
+                    print(dato)
             case "6":
-                print()
+                print(guardar_servicios())
             case "7":
                 print("Hasta luego :)")
                 break
