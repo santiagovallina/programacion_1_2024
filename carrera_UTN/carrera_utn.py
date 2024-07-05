@@ -2,6 +2,7 @@ import pygame as pg
 from constantes_utn import *
 from datos_utn import lista
 import json
+from funciones_carrera_utn import *
 
 
 pregunta = ""
@@ -80,73 +81,6 @@ screen = pg.display.set_mode((ANCHO_VENTANA, ALTO_VENTANA))
 pg.display.set_caption("Carrera UTN")
 
 
-def render_text(texto, fuente, color, max_ancho):
-    palabras = texto.split(' ')
-    lineas = []
-    linea_actual = palabras[0]
-    for palabra in palabras[1:]:
-        if fuente.size(linea_actual + ' ' + palabra)[0] <= max_ancho:
-            linea_actual += ' ' + palabra
-        else:
-            lineas.append(linea_actual)
-            linea_actual = palabra
-    lineas.append(linea_actual)
-    return [fuente.render(linea, True, color) for linea in lineas]
-
-
-
-def pedir_nombre():
-    nombre = ""
-    while True:
-        for evento in pg.event.get():
-            if evento.type == pg.QUIT:
-                pg.quit()
-                return None
-            elif evento.type == pg.KEYDOWN:
-                if evento.key == pg.K_RETURN:
-                    return nombre
-                elif evento.key == pg.K_BACKSPACE:
-                    nombre = nombre[:-1]
-                else:
-                    nombre += evento.unicode
-        screen.fill(STEELBLUE)
-        texto = fuente.render("Ingrese su nombre: " + nombre, True, NEGRO)
-        screen.blit(texto, (100, 200))
-        pg.display.flip()
-
-
-
-def guardar_puntaje(nombre, puntaje):
-    archivo_puntajes = "puntajes.json"
-    try:
-        with open(archivo_puntajes, "r") as archivo:
-            puntajes = json.load(archivo)
-    except FileNotFoundError:
-        puntajes = []
-    puntajes.append({"nombre": nombre, "puntaje": puntaje})
-    puntajes = sorted(puntajes, key=lambda x: x["puntaje"], reverse=True)[:10]
-    with open(archivo_puntajes, "w") as archivo:
-        json.dump(puntajes, archivo)
-
-
-def mostrar_mejores_puntajes():
-    archivo_puntajes = "puntajes.json"
-    try:
-        with open(archivo_puntajes, "r") as archivo:
-            puntajes = json.load(archivo)
-    except FileNotFoundError:
-        puntajes = []
-    screen.fill(STEELBLUE)
-    posicion_y = 50
-    for indice, puntaje in enumerate(puntajes):
-        texto = fuente.render(f"{indice + 1} {puntaje['nombre'].capitalize()} - {puntaje['puntaje']}", True, NEGRO)
-        screen.blit(texto, (100, posicion_y))
-        posicion_y += 50
-    pg.display.flip()
-    pg.time.wait(4000)
-
-
-
 
 flag_run = True
 while flag_run:
@@ -172,10 +106,10 @@ while flag_run:
                 segundos = 5
             
             if posicion_click[0] > 450 and posicion_click[0] < 650 and posicion_click[1] > 520 and posicion_click[1] < 600:
-                nombre = pedir_nombre()
+                nombre = pedir_nombre(screen, fuente)
                 if nombre:
                     guardar_puntaje(nombre, puntuacion)
-                    mostrar_mejores_puntajes()
+                    mostrar_mejores_puntajes(screen, fuente)
                 pregunta = ""
                 respuesta_a = ""
                 respuesta_b = ""
@@ -266,10 +200,10 @@ while flag_run:
         
     
     if rect_personaje.colliderect(rect_llegada):
-        nombre = pedir_nombre()
+        nombre = pedir_nombre(screen, fuente)
         if nombre:
             guardar_puntaje(nombre, puntuacion)
-            mostrar_mejores_puntajes()
+            mostrar_mejores_puntajes(screen, fuente)
         
     if rect_personaje.x > 505 and rect_personaje.x < 560 and rect_personaje.y < 340:
         rect_personaje.move_ip(65, 0)
