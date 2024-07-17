@@ -4,7 +4,7 @@ import pygame as pg
 import json
 
 
-def render_text(texto, fuente, color, max_ancho):
+def render_texto(texto, fuente, color, max_ancho):
     palabras = texto.split(' ')
     lineas = []
     linea_actual = palabras[0]
@@ -17,6 +17,7 @@ def render_text(texto, fuente, color, max_ancho):
     lineas.append(linea_actual)
     return [fuente.render(linea, True, color) for linea in lineas]
 
+
 def pedir_nombre(pantalla, fuente):
     nombre = ""
     while True:
@@ -27,8 +28,6 @@ def pedir_nombre(pantalla, fuente):
             elif evento.type == pg.KEYDOWN:
                 if evento.key == pg.K_RETURN:
                     return nombre
-                elif evento.key == pg.K_BACKSPACE:
-                    nombre = nombre[:-1]
                 else:
                     nombre += evento.unicode
         pantalla.fill(STEELBLUE)

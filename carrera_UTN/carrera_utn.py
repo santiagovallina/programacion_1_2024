@@ -98,14 +98,33 @@ while flag_run:
                 respuesta_b = lista_respuesta_b[contador]
                 respuesta_c = lista_respuesta_c[contador]
                 respuesta_correcta = lista_respuesta_correcta[contador]
-                texto_pregunta_lineas = render_text(pregunta, fuente_dos, NEGRO, 350)
-                texto_respuesta_a = render_text(respuesta_a, fuente_dos, COLOR_AMARILLO, 100)
-                texto_respuesta_b = render_text(respuesta_b, fuente_dos, COLOR_AMARILLO, 100)
-                texto_respuesta_c = render_text(respuesta_c, fuente_dos, COLOR_AMARILLO, 100)
+                texto_pregunta_lineas = render_texto(pregunta, fuente_dos, NEGRO, 350)
+                texto_respuesta_a = render_texto(respuesta_a, fuente_dos, COLOR_AMARILLO, 100)
+                texto_respuesta_b = render_texto(respuesta_b, fuente_dos, COLOR_AMARILLO, 100)
+                texto_respuesta_c = render_texto(respuesta_c, fuente_dos, COLOR_AMARILLO, 100)
                 tiempo_iniciado = True
                 segundos = 5
             
-            if posicion_click[0] > 450 and posicion_click[0] < 650 and posicion_click[1] > 520 and posicion_click[1] < 600:
+            elif posicion_click[0] > 450 and posicion_click[0] < 650 and posicion_click[1] > 520 and posicion_click[1] < 600:
+                nombre = pedir_nombre(screen, fuente)
+                if nombre:
+                    guardar_puntaje(nombre, puntuacion)
+                    mostrar_mejores_puntajes(screen, fuente)
+                pregunta = ""
+                respuesta_a = ""
+                respuesta_b = ""
+                respuesta_c = ""
+                texto_pregunta_lineas = []
+                texto_respuesta_a = []
+                texto_respuesta_b = []
+                texto_respuesta_c = []
+                puntuacion = 0
+                contador = 0
+                segundos = 5
+                rect_personaje = pg.Rect(120, 240, 150, 40)
+                tiempo_iniciado = False
+                
+            elif rect_personaje.colliderect(55, 375, 150, 40):
                 nombre = pedir_nombre(screen, fuente)
                 if nombre:
                     guardar_puntaje(nombre, puntuacion)
@@ -170,10 +189,10 @@ while flag_run:
                     respuesta_b = lista_respuesta_b[contador]
                     respuesta_c = lista_respuesta_c[contador]
                     respuesta_correcta = lista_respuesta_correcta[contador]
-                    texto_pregunta_lineas = render_text(pregunta, fuente_dos, NEGRO, 350)
-                    texto_respuesta_a = render_text(respuesta_a, fuente_dos, COLOR_AMARILLO, 100)
-                    texto_respuesta_b = render_text(respuesta_b, fuente_dos, COLOR_AMARILLO, 100)
-                    texto_respuesta_c = render_text(respuesta_c, fuente_dos, COLOR_AMARILLO, 100)
+                    texto_pregunta_lineas = render_texto(pregunta, fuente_dos, NEGRO, 350)
+                    texto_respuesta_a = render_texto(respuesta_a, fuente_dos, COLOR_AMARILLO, 100)
+                    texto_respuesta_b = render_texto(respuesta_b, fuente_dos, COLOR_AMARILLO, 100)
+                    texto_respuesta_c = render_texto(respuesta_c, fuente_dos, COLOR_AMARILLO, 100)
                     segundos = 5  # Reiniciar el temporizador para la siguiente pregunta
                 else:
                     fin_tiempo = True
@@ -190,20 +209,20 @@ while flag_run:
                         respuesta_b = lista_respuesta_b[contador]
                         respuesta_c = lista_respuesta_c[contador]
                         respuesta_correcta = lista_respuesta_correcta[contador]
-                        texto_pregunta_lineas = render_text(pregunta, fuente_dos, NEGRO, 350)
-                        texto_respuesta_a = render_text(respuesta_a, fuente_dos, COLOR_AMARILLO, 100)
-                        texto_respuesta_b = render_text(respuesta_b, fuente_dos, COLOR_AMARILLO, 100)
-                        texto_respuesta_c = render_text(respuesta_c, fuente_dos, COLOR_AMARILLO, 100)
+                        texto_pregunta_lineas = render_texto(pregunta, fuente_dos, NEGRO, 350)
+                        texto_respuesta_a = render_texto(respuesta_a, fuente_dos, COLOR_AMARILLO, 100)
+                        texto_respuesta_b = render_texto(respuesta_b, fuente_dos, COLOR_AMARILLO, 100)
+                        texto_respuesta_c = render_texto(respuesta_c, fuente_dos, COLOR_AMARILLO, 100)
                         segundos = 5  # Reiniciar temporizador
                     else:
                         fin_tiempo = True
+                        nombre = pedir_nombre(screen, fuente)
+                        if nombre:
+                            guardar_puntaje(nombre, puntuacion)
+                            mostrar_mejores_puntajes(screen, fuente)
         
     
-    if rect_personaje.colliderect(rect_llegada):
-        nombre = pedir_nombre(screen, fuente)
-        if nombre:
-            guardar_puntaje(nombre, puntuacion)
-            mostrar_mejores_puntajes(screen, fuente)
+        
         
     if rect_personaje.x > 505 and rect_personaje.x < 560 and rect_personaje.y < 340:
         rect_personaje.move_ip(65, 0)
